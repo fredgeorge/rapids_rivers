@@ -6,7 +6,7 @@ class PacketProblemsTest < MiniTest::Test
   JSON_STRING = {"key1" => "value1"}.to_json
 
   def setup
-    @problems = PacketProblems.new(JSON_STRING)
+    @problems = RapidsRivers::PacketProblems.new(JSON_STRING)
   end
 
   def test_no_problems_found_default
