@@ -1,6 +1,6 @@
 require 'bunny'
 
-require_relative '../rapids_connection'
+require_relative './rapids_connection'
 require_relative './rabbit_mq_river'
 
 module RapidsRivers
