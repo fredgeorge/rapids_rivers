@@ -10,7 +10,7 @@ class RiverTest < MiniTest::Test
         "{\"offer\":\"500 extra points\"}," +
         "{\"offer\":\"free upgrade\"}" +
         "]," +
-        "\"frequent_renter\":\"\"," +
+        "\"membership_level\":\"\"," +
         "\"system_read_count\":2," +
         "\"contributing_services\":[]}";
 
@@ -64,7 +64,7 @@ class RiverTest < MiniTest::Test
   end
 
   def test_empty_string_field_implies_missing
-    @river.require 'frequent_renter'
+    @river.require 'membership_level'
     @service.define_singleton_method :on_error do |send_port, errors|
       assert_errors errors
     end
@@ -72,19 +72,30 @@ class RiverTest < MiniTest::Test
   end
 
   def test_forbidden_field
-    @river.forbid 'frequent_renter', 'contributing_services', 'missing_key'
+    @river.forbid 'membership_level', 'contributing_services', 'missing_key'
     @service.define_singleton_method :packet do |send_port, packet, warnings|
       refute_messages warnings
-      packet.frequent_renter = 'platinum'
-      assert_equal 'platinum', packet.frequent_renter
+      packet.membership_level = 'platinum'
+      assert_equal 'platinum', packet.membership_level
       packet.contributing_services << 'a testing service'
       packet.missing_key = '<accessor created>'
     end
     @rapids_connection.received_message SOLUTION_STRING
   end
 
+  def test_null_keys_not_in_json
+    @river.forbid 'missing_key1', 'missing_key2'
+    @service.define_singleton_method :packet do |send_port, packet, warnings|
+      refute_messages warnings
+      packet.missing_key1 = '<content>'
+      assert_match 'missing_key1', packet.to_json
+      refute_match 'missing_key2', packet.to_json
+    end
+    @rapids_connection.received_message SOLUTION_STRING
+  end
+
   def test_forbidden_field_exists
-    @river.forbid 'frequent_renter', 'user_id'
+    @river.forbid 'user_id'
     @service.define_singleton_method :on_error do |send_port, errors|
       assert_errors errors
     end
@@ -119,10 +130,10 @@ class RiverTest < MiniTest::Test
   end
 
   def test_interesting_optional_field
-    @river.interested_in 'frequent_renter'
+    @river.interested_in 'membership_level'
     @service.define_singleton_method :packet do |send_port, packet, warnings|
       refute_messages warnings
-      packet.frequent_renter = 'platinum'
+      packet.membership_level = 'platinum'
     end
     @rapids_connection.received_message SOLUTION_STRING
   end
@@ -131,7 +142,7 @@ class RiverTest < MiniTest::Test
     @river
         .require('need', 'user_id')
         .forbid('contributing_services', 'missing_key')
-        .interested_in('frequent_renter')
+        .interested_in('membership_level')
         .require('solutions')
     @service.define_singleton_method :packet do |send_port, packet, warnings|
       refute_messages warnings
@@ -209,6 +220,10 @@ class RiverTest < MiniTest::Test
 
         def assert_match expected_contained_string, actual_string
           @test.assert_match expected_contained_string, actual_string
+        end
+
+        def refute_match expected_contained_string, actual_string
+          @test.refute_match expected_contained_string, actual_string
         end
 
     end

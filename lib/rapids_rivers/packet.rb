@@ -27,7 +27,7 @@ module RapidsRivers
     end
 
     def to_json
-      @used_keys.each { |key| @json_hash[key] = instance_variable_get("@#{key}".to_sym) if @json_hash[key] }
+      @used_keys.each { |key| @json_hash[key] = instance_variable_get("@#{key}".to_sym) if instance_variable_get("@#{key}".to_sym) }
       @json_hash.to_json
     end
 
