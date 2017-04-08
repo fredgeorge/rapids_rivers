@@ -19,7 +19,7 @@ module RapidsRivers
     end
 
     def used_key(key)
-      @used_keys << key
+      @used_keys << key.to_s
     end
 
     def clone_with_name(service_name)
@@ -27,7 +27,7 @@ module RapidsRivers
     end
 
     def to_json
-      @used_keys.each { |key| @json_hash[key] = instance_variable_get("@#{key}".to_sym) }
+      @used_keys.each { |key| @json_hash[key] = instance_variable_get("@#{key}".to_sym) if @json_hash[key] }
       @json_hash.to_json
     end
 

@@ -78,7 +78,7 @@ class RiverTest < MiniTest::Test
       packet.frequent_renter = 'platinum'
       assert_equal 'platinum', packet.frequent_renter
       packet.contributing_services << 'a testing service'
-      missing_key = '<accessor created>'
+      packet.missing_key = '<accessor created>'
     end
     @rapids_connection.received_message SOLUTION_STRING
   end
