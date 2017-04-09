@@ -22,8 +22,9 @@ module RapidsRivers
       packet_problems = RapidsRivers::PacketProblems.new message
       packet = packet_from message, packet_problems
       @listening_services.each do |ls|
-        next ls.on_error(send_port, packet_problems) if packet_problems.errors?
-        ls.packet send_port, packet.clone_with_name(ls.service_name), packet_problems
+        next ls.packet(send_port, packet.clone_with_name(service_name(ls)), packet_problems) unless packet_problems.errors?
+        next unless ls.respond_to? :on_error
+        ls.on_error(send_port, packet_problems) if packet_problems.errors?
       end
     end
 
@@ -54,8 +55,8 @@ module RapidsRivers
     def require_values(key_value_hashes)
       key_value_hashes.each do |key, value|
         @validations << lambda do |json_hash, packet, packet_problems|
-          validate_value key.to_s, value, json_hash, packet_problems
-          create_accessors key.to_s, json_hash, packet
+          validate_value key, value, json_hash, packet_problems
+          create_accessors key, json_hash, packet
         end
       end
       self
@@ -69,6 +70,12 @@ module RapidsRivers
       end
       self
     end
+
+    protected
+
+      def service_name(service)
+        service.respond_to?(:service_name) ? service.service_name : '<unknown>'
+      end
 
     private
 
@@ -86,23 +93,27 @@ module RapidsRivers
       end
 
       def validate_required key, json_hash, packet_problems
-        return packet_problems.error "Missing required key #{key}" unless json_hash[key]
-        return packet_problems.error "Empty required key #{key}" unless value?(json_hash[key])
+        key = key.to_s
+        return packet_problems.error "Missing required key '#{key}'" unless json_hash[key]
+        return packet_problems.error "Empty required key '#{key}'" unless value?(json_hash[key])
       end
 
       def validate_missing key, json_hash, packet_problems
+        key = key.to_s
         return unless json_hash.key? key
         return unless value?(json_hash[key])
-        packet_problems.error "Forbidden key #{key} detected"
+        packet_problems.error "Forbidden key '#{key}'' detected"
       end
 
       def validate_value key, value, json_hash, packet_problems
+        key = key.to_s
         validate_required key, json_hash, packet_problems
         return if json_hash[key] == value
         packet_problems.error "Required value of key '#{key}' is '#{json_hash[key]}', not '#{value}'"
       end
 
       def create_accessors key, json_hash, packet
+        key = key.to_s
         packet.used_key key
         establish_variable key, json_hash[key], packet
         define_getter key, packet

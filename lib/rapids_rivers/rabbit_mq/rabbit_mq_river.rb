@@ -21,7 +21,7 @@ module RapidsRivers
     private
 
       def queue service
-        @queue ||= @rapids_connection.queue service.service_name
+        @queue ||= @rapids_connection.queue service_name(service)
       end
 
   end
