@@ -8,7 +8,7 @@ module RapidsRivers
     VISIT_COUNT = 'system_read_count'
     CONTRIBUTING_SERVICES = 'contributing_services'
 
-    attr_reader :contributing_services
+    attr_reader :contributing_services, :system_read_count
     protected :contributing_services
 
     def initialize(json_hash)

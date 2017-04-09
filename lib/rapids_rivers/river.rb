@@ -11,8 +11,8 @@ module RapidsRivers
     attr_reader :rapids_connection, :listening_services
     protected :rapids_connection, :listening_services
 
-    def initialize rapids_connection
-      @rapids_connection = rapids_connection
+    def initialize rapids_connection, read_count_limit = 9
+      @rapids_connection, @read_count_limit = rapids_connection, read_count_limit
       @listening_services = []
       @validations = []
       rapids_connection.register(self);
@@ -20,7 +20,8 @@ module RapidsRivers
 
     def message send_port, message
       packet_problems = RapidsRivers::PacketProblems.new message
-      packet = packet_from message, packet_problems
+      packet = validated_packet message, packet_problems
+      return if packet_problems && packet.system_read_count > @read_count_limit
       @listening_services.each do |ls|
         next ls.packet(send_port, packet.clone_with_name(service_name(ls)), packet_problems) unless packet_problems.errors?
         next unless ls.respond_to? :on_error
@@ -79,7 +80,7 @@ module RapidsRivers
 
     private
 
-      def packet_from message, packet_problems
+      def validated_packet message, packet_problems
         begin
           json_hash = JSON.parse(message)
           packet = Packet.new json_hash

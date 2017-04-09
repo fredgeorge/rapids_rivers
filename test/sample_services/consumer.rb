@@ -14,6 +14,7 @@ class Consumer
     @river = RapidsRivers::RabbitMqRiver.new(rapids_connection)
     @river.require_values name: 'producer'
     @river.forbid :solution
+    # @river.interested_in :solution
     @service_name = 'consumer'
   end
 
