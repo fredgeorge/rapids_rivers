@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["fredgeorge@acm.org"]
 
   spec.summary       = %q{Provides a Rapids/Rivers framework for asynchronous MicroServices}
-  spec.description   = %q{Provides a generic Rapids/Rivers framework, and a specific implementation useing RabbitMQ as the event bus.}
+  spec.description   = %q{Provides a generic Rapids/Rivers framework, and a specific implementation using RabbitMQ as the event bus.}
   spec.homepage      = "https://github.com/fredgeorge/rapids_rivers"
   spec.license       = "MIT"
 
