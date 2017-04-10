@@ -27,13 +27,27 @@ module RapidsRivers
     end
 
     def to_json
-      @used_keys.each { |key| @json_hash[key] = instance_variable_get("@#{key}".to_sym) if instance_variable_get("@#{key}".to_sym) }
+      update_hash
       @json_hash.to_json
     end
 
     def to_s
       "Packet (in JSON): #{self.to_json}"
     end
+
+    def pretty_print
+      update_hash
+      JSON.pretty_generate @json_hash
+    end
+
+    private
+
+      def update_hash
+        @used_keys.each do |key|
+          value = instance_variable_get("@#{key}".to_sym)
+          @json_hash[key] = value if value
+        end
+      end
 
   end
 

@@ -21,7 +21,7 @@ module RapidsRivers
     def message send_port, message
       packet_problems = RapidsRivers::PacketProblems.new message
       packet = validated_packet message, packet_problems
-      return if packet_problems && packet.system_read_count > @read_count_limit
+      return if packet && packet.respond_to?(:system_read_count) && packet.system_read_count > @read_count_limit
       @listening_services.each do |ls|
         next ls.packet(send_port, packet.clone_with_name(service_name(ls)), packet_problems) unless packet_problems.errors?
         next unless ls.respond_to? :on_error
