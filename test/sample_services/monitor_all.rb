@@ -34,4 +34,4 @@ class MonitorAll
 
 end
 
-MonitorAll.new(ARGV.shift, ARGV.shift.to_i).start
+MonitorAll.new(ARGV.shift, ARGV.shift).start
