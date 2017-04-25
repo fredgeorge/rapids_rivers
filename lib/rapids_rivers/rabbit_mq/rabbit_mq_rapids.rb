@@ -1,7 +1,7 @@
 require 'bunny'
 
-require 'pry'
-require 'pry-nav'
+# require 'pry'
+# require 'pry-nav'
 
 require_relative '../rapids_connection'
 require_relative './rabbit_mq_river'
@@ -17,7 +17,6 @@ module RapidsRivers
     def initialize(host_ip, port)
       host_ip = host_ip || ENV['RABBITMQ_IP'] || throw("Need IP address for RabbitMQ")
       port = port || ENV['RABBITMQ_PORT'] || 5672
-      binding.pry
       @connection = Bunny.new(
         :host => host_ip,
         :port => port.to_i,
