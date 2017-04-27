@@ -35,4 +35,4 @@ class Consumer
 
 end
 
-Consumer.new(ARGV.shift, ARGV.shift.to_i).start
+Consumer.new(ARGV.shift, ARGV.shift).start

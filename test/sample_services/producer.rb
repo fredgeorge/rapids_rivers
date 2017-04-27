@@ -34,4 +34,4 @@ def initialize(host_ip, port)
 
 end
 
-Producer.new(ARGV.shift, ARGV.shift.to_i).start
+Producer.new(ARGV.shift, ARGV.shift).start

@@ -7,6 +7,7 @@
 # require 'pry'
 # require 'pry-nav'
 
+require 'securerandom'
 require 'rapids_rivers'
 
 # Understands the complete stream of messages on an event bus
@@ -16,7 +17,7 @@ class MonitorAll
   def initialize(host_ip, port)
     rapids_connection = RapidsRivers::RabbitMqRapids.new(host_ip, port)
     @river = RapidsRivers::RabbitMqRiver.new(rapids_connection)
-    @service_name = 'monitor_all'
+    @service_name = 'monitor_all_' + SecureRandom.uuid
   end
 
   def start
