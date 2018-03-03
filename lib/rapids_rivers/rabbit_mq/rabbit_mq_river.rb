@@ -1,7 +1,7 @@
 require_relative '../river'
 
 # require 'pry'
-# require 'pry-nav'
+# require 'pry-byebug'
 
 module RapidsRivers
 

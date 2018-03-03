@@ -5,7 +5,7 @@
 
 # For debugging...
 # require 'pry'
-# require 'pry-nav'
+# require 'pry-byebug'
 
 require 'securerandom'
 require 'rapids_rivers'

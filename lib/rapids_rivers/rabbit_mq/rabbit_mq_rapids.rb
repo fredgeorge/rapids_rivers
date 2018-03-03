@@ -1,7 +1,7 @@
 require 'bunny'
 
 # require 'pry'
-# require 'pry-nav'
+# require 'pry-byebug'
 
 require_relative '../rapids_connection'
 require_relative './rabbit_mq_river'
